@@ -15,8 +15,9 @@ xpack.security.transport.ssl.enabled: true  ---optional
 # Run the following command to set passwords for the built-in users:
   
 -----
-   sh
    /usr/share/elasticsearch/bin/elasticsearch-setup-passwords interactive
+   /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic
+
    
     
 # Follow the prompts to set passwords for the various users, such as elastic, kibana_system, and others.
@@ -32,4 +33,20 @@ Open the kibana.yml configuration file, usually located in /etc/kibana/ or confi
     elasticsearch.password: "<kibana_system_password>"
     xpack.security.enabled: true
     sudo systemctl restart kibana.service
+    sudo systemctl start elasticsearch.service
+
+
+# test 
+  curl -u elastic:<new_password> http://172.0.0.1:9200/_security/_authenticate?pretty
+  curl -X GET "localhost:9200/?pretty"
+
+
+# Reset the Password Using Alternative Method (If Cluster Health is Good)
+   curl -X POST "localhost:9200/_security/user/elastic/_password" -H "Content-Type: application/json" -d '{
+     "password" : "new_password"
+    }'
+
+
+
+
 
